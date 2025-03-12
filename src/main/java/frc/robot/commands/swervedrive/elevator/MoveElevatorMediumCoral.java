@@ -7,12 +7,12 @@ import frc.robot.subsystems.swervedrive.ClawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.swervedrive.ElevatorSubsystem.ElevatorSubsystem;
 import frc.robot.utilities.Constants.AutoConstants;
 
-public class MoveElevatorHighCoral extends Command {
+public class MoveElevatorMediumCoral extends Command {
     ElevatorSubsystem elevatorSubsystem;
     ClawSubsystem clawSubsystem;
     DoubleSupplier velocity;
 
-    public MoveElevatorHighCoral(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem){
+    public MoveElevatorMediumCoral(ElevatorSubsystem elevatorSubsystem, ClawSubsystem clawSubsystem){
         this.elevatorSubsystem = elevatorSubsystem;
         this.clawSubsystem = clawSubsystem;
         addRequirements(elevatorSubsystem);
@@ -22,15 +22,15 @@ public class MoveElevatorHighCoral extends Command {
     @Override
     public void execute(){
 
-        elevatorSubsystem.moveTo(AutoConstants.HIGH_CORAL_ELEVATOR_POSITION);
+        elevatorSubsystem.moveTo(AutoConstants.MEDIUM_CORAL_ELEVATOR_POSITION);
         
-        clawSubsystem.moveTo(AutoConstants.HIGH_CORAL_CLAW_POSITION);
-    
+        clawSubsystem.moveTo(AutoConstants.MIDDLE_CORAL_CLAW_POSITION);
+        
     }
 
     @Override
     public void end(boolean interrupted){
         elevatorSubsystem.stop();
-        System.out.println("stoped moving elevator to high coral");
+        System.out.println("stoped moving elevator to medium coral");
     }
 }

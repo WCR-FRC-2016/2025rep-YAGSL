@@ -10,7 +10,7 @@ import frc.robot.subsystems.swervedrive.LedSubsystem.LedSubsystem;
 
 public class LedControll extends SubsystemBase {
     private static final int kPort = 9;
-    private static final int kLength = 120;
+    private static final int kLength = 220;
   
     private final AddressableLED m_led;
     private final AddressableLEDBuffer m_buffer;

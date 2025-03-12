@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.Constants.AbsoluteEncoderOffsets;
 import frc.robot.utilities.Constants.LimitConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -34,18 +35,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void moveTo(double setpoint){
         elevator.set(pid.calculate(elevator.getEncoder().getPosition() - offset, setpoint));
-        System.out.println("elevator - offset:" + (elevator.getEncoder().getPosition() - offset) );
     }
 
     public double getEncoderValue(){
-        return elevator.getEncoder().getPosition();
+        return elevator.getEncoder().getPosition() - offset;
+    }
+
+    public double getAbsoluteEncoderValue(){
+        return elevator.getAlternateEncoder().getPosition();
     }
 
     public void stop(){
         elevator.set(0.0);
     }
 
-    private double actualEncoderValue(){
-        return elevator.getEncoder().getPosition() - offset;
+    public double actualEncoderValue(){
+        return elevator.getAbsoluteEncoder().getPosition() - AbsoluteEncoderOffsets.ELEVATOR_OFFSET;
     }
 }

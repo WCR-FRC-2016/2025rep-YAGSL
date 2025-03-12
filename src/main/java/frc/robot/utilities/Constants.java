@@ -60,14 +60,28 @@ public final class Constants
   }
 
   public static class LimitConstants{
-    public static final double ELEVATOR_HEIGHT_LIMIT = 290;
+    public static final double ELEVATOR_HEIGHT_LIMIT = 300;
     public static final double CLAW_UPPER_LIMIT = 0.0;
     public static final double CLAW_LOWER_LIMIT = -0.5737;
     ;
   }
 
-  public static class AutoConstants{
-    public static final double HIGH_CORAL_CLAW_POSITION = 0.3;
-    public static final double HIGH_CORAL_ELEVATOR_POSITION = 25;
+  public static class AbsoluteEncoderOffsets{
+    public static final double ELEVATOR_OFFSET = 0.0;
+    public static final double CLAW_OFFSET = 0.0;
+    public static final double FUNNEL_OFFSET = 0.0;
   }
+
+  public static class AutoConstants{
+    public static final double HIGH_CORAL_CLAW_POSITION = -0.182861328125;
+    public static final double MIDDLE_CORAL_CLAW_POSITION = -0.193359375;
+    public static final double LOW_CORAL_CLAW_POSITION = -0.9;
+    public static final double HOME_CORAL_CLAW_POSITION = 0.0;
+    public static final double HIGH_CORAL_ELEVATOR_POSITION = 330;
+    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 215.9638671875;
+    public static final double HOME_ELEVATOR_POSITION = 20;
+
+  }
+
+  
 }

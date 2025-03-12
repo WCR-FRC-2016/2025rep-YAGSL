@@ -10,6 +10,7 @@ public class LimelightDriveAlignCommand extends Command {
     private double desiredAngle;
     private double offsetX;
     private double offsetZ;
+    private double yaw;
     private static double desiredDistanceZ = -1;
     private static double desiredDistanceX = 0;
     private double actualDistanceZ;
@@ -65,23 +66,25 @@ public class LimelightDriveAlignCommand extends Command {
         System.out.println("distance: " + botpose[2] + " | angle: " + NetworkTables.getTx());
         actualDistanceX = botpose[0];
         actualDistanceZ = botpose[2];
+        yaw = botpose[5];
         double distanceToMoveZ = (actualDistanceZ - desiredDistanceZ);
         double distanceToMoveX = -1 * (actualDistanceX - desiredDistanceX);
-        desiredAngle = driveBase.getHeading().getDegrees() + actualDistanceX; // !!!!!!!CHANGED FROM NetworkTables.getTx() !!!!!!!
+        desiredAngle = driveBase.getHeading().getDegrees() - yaw; // !!!!!!!CHANGED FROM NetworkTables.getTx() !!!!!!!
         driveBase.drive(distanceToMoveZ * 0.6, distanceToMoveX * 0.6, Math.toRadians(desiredAngle));
+        //System.out.println("yaw: " + yaw);
         
     }
 
-    @Override
-    public boolean isFinished() {
+    // @Override
+    // public boolean isFinished() {
 
-        // return Math.abs( currentAngle) <= 0.1d;
-        if (Math.abs(actualDistanceX) <= 3d && Math.abs(desiredDistanceZ) - 0.25 <= Math.abs(actualDistanceZ) && Math.abs(actualDistanceZ) <= Math.abs(desiredDistanceZ) + 0.5) {
-            System.out.println("Finished alignment");
-            return true;
-        }
-        return false;
-    }
+    //     // return Math.abs( currentAngle) <= 0.1d;
+    //     if (Math.abs(actualDistanceX) <= 3d && Math.abs(desiredDistanceZ) - 0.25 <= Math.abs(actualDistanceZ) && Math.abs(actualDistanceZ) <= Math.abs(desiredDistanceZ) + 0.5) {
+    //         System.out.println("Finished alignment");
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     // public double getTx() {
 
