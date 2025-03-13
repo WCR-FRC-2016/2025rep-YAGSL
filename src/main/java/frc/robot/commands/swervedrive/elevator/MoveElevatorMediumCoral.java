@@ -21,9 +21,9 @@ public class MoveElevatorMediumCoral extends Command {
 
     @Override
     public void execute(){
-
-        elevatorSubsystem.moveTo(AutoConstants.MEDIUM_CORAL_ELEVATOR_POSITION);
-        
+        if(clawSubsystem.getEncoderValue() <= -0.15){
+            elevatorSubsystem.moveTo(AutoConstants.MEDIUM_CORAL_ELEVATOR_POSITION);
+        }
         clawSubsystem.moveTo(AutoConstants.MIDDLE_CORAL_CLAW_POSITION);
         
     }
