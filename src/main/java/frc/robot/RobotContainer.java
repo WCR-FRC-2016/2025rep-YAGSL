@@ -50,7 +50,7 @@ import frc.robot.subsystems.swervedrive.ClawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.swervedrive.ElevatorSubsystem.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.FunnelSubsystem.FunnelSubsystem;
 import frc.robot.subsystems.swervedrive.LedSubsystem.LedSubsystem;
-import frc.robot.triggers.Triggers;
+import frc.robot.triggers.triggers;
 
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -153,8 +153,8 @@ public class RobotContainer
   private void configureBindings()
   {
     //driverCommandXbox.x().whileTrue(new LimelightDriveAlignCommand(drivebase, 1, 0));
-    Triggers.povRightX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0.4, -0.9));
-    Triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -0.9));
+    triggers.povRightX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0.4, -0.9));
+    triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -0.9));
     driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
     driverCommandXbox.back().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
     driverCommandXbox.start().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem));
