@@ -21,7 +21,6 @@ public class MoveToHomePosition extends Command {
 
     @Override
     public void execute() {
-        clawSubsystem.setPlacingState(false);
         elevatorSubsystem.moveTo(AutoConstants.HOME_ELEVATOR_POSITION);
         if(elevatorSubsystem.getEncoderValue() < 130){
             clawSubsystem.moveTo(AutoConstants.HOME_CORAL_CLAW_POSITION + 0.01);
