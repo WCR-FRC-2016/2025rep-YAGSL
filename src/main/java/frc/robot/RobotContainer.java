@@ -40,6 +40,7 @@ import frc.robot.commands.swervedrive.elevator.MoveElevatorMediumCoral;
 import frc.robot.commands.swervedrive.elevator.MoveToHomePosition;
 import frc.robot.commands.swervedrive.funnel.MoveFunnelDown;
 import frc.robot.commands.swervedrive.funnel.MoveFunnelUp;
+import frc.robot.commands.swervedrive.other.Rumble;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.ActuatorSubsystem.ActuatorSubsystem;
 import frc.robot.subsystems.swervedrive.ClawSubsystem.ClawSubsystem;
@@ -64,7 +65,8 @@ public class RobotContainer
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverCommandXbox = new CommandXboxController(0);
   final         XboxController driverXbox = new XboxController(0);
-  final         CommandXboxController manipulatorXbox = new CommandXboxController(1);
+  final         CommandXboxController manipulatorCommandXbox = new CommandXboxController(1);
+  final         XboxController manipulatorXbox  = new XboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
@@ -153,26 +155,27 @@ public class RobotContainer
     driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
     driverCommandXbox.back().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
     driverCommandXbox.start().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem));
+    driverCommandXbox.rightTrigger(0.1).whileTrue(new Rumble(manipulatorXbox, 0.5));
 
-    manipulatorXbox.povRight().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
-    manipulatorXbox.povLeft().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
-    manipulatorXbox.povUp().whileTrue(new PullActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
-    manipulatorXbox.povDown().whileTrue(new PushActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
-    manipulatorXbox.rightBumper().whileTrue(new MoveKicker(clawSubsystem, SpeedConstants.KICKER_SPEED));
-    manipulatorXbox.leftBumper().whileTrue(new MoveKicker(clawSubsystem, -SpeedConstants.KICKER_SPEED));
-    manipulatorXbox.a().whileTrue(new MoveToHomePosition(elevatorSubsystem, clawSubsystem));
-    manipulatorXbox.y().whileTrue(new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem));
-    manipulatorXbox.x().whileTrue(new MoveElevatorMediumCoral(elevatorSubsystem, clawSubsystem));
-    manipulatorXbox.rightTrigger(0.1).whileTrue(new PlaceCoral(clawSubsystem, 0.9));
+    manipulatorCommandXbox.povRight().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
+    manipulatorCommandXbox.povLeft().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
+    manipulatorCommandXbox.povUp().whileTrue(new PullActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
+    manipulatorCommandXbox.povDown().whileTrue(new PushActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
+    manipulatorCommandXbox.rightBumper().whileTrue(new MoveKicker(clawSubsystem, SpeedConstants.KICKER_SPEED));
+    manipulatorCommandXbox.leftBumper().whileTrue(new MoveKicker(clawSubsystem, -SpeedConstants.KICKER_SPEED));
+    manipulatorCommandXbox.a().whileTrue(new MoveToHomePosition(elevatorSubsystem, clawSubsystem));
+    manipulatorCommandXbox.y().whileTrue(new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem));
+    manipulatorCommandXbox.x().whileTrue(new MoveElevatorMediumCoral(elevatorSubsystem, clawSubsystem));
+    manipulatorCommandXbox.rightTrigger(0.1).whileTrue(new Rumble(driverXbox, 0.5));
 
       // clawSubsystem.setDefaultCommand(
       //   new MovePositioning(clawSubsystem, elevatorSubsystem));
 
     elevatorSubsystem.setDefaultCommand(
-      new MoveElevator(elevatorSubsystem, clawSubsystem, () -> MathUtil.applyDeadband(manipulatorXbox.getLeftY(), 0.3) * -SpeedConstants.ELEVATOR_SPEED));
+      new MoveElevator(elevatorSubsystem, clawSubsystem, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getLeftY(), 0.3) * -SpeedConstants.ELEVATOR_SPEED));
 
     clawSubsystem.setDefaultCommand(
-      new MoveClaw(clawSubsystem, elevatorSubsystem, () -> MathUtil.applyDeadband(manipulatorXbox.getRightY(), 0.3) * -SpeedConstants.CLAW_SPEED));
+      new MoveClaw(clawSubsystem, elevatorSubsystem, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getRightY(), 0.3) * -SpeedConstants.CLAW_SPEED));
       
 
     
