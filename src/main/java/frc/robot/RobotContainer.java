@@ -6,6 +6,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,12 +18,15 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.utilities.Constants.Auton;
 import frc.robot.utilities.Constants.OperatorConstants;
 import frc.robot.utilities.Constants.SpeedConstants;
 import frc.robot.commands.swervedrive.Led.LedControll;
@@ -37,8 +41,10 @@ import frc.robot.commands.swervedrive.claw.PlaceCoral;
 import frc.robot.commands.swervedrive.debug.Debug;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.commands.swervedrive.drivebase.LimelightDriveAlignCommand;
+import frc.robot.commands.swervedrive.drivebase.LimelightDriveCommand;
 import frc.robot.commands.swervedrive.elevator.MoveElevator;
 import frc.robot.commands.swervedrive.elevator.MoveElevatorHighCoral;
+import frc.robot.commands.swervedrive.elevator.MoveElevatorLowCoral;
 import frc.robot.commands.swervedrive.elevator.MoveElevatorMediumCoral;
 import frc.robot.commands.swervedrive.elevator.MoveToHomePosition;
 import frc.robot.commands.swervedrive.funnel.MoveFunnelDown;
@@ -50,7 +56,7 @@ import frc.robot.subsystems.swervedrive.ClawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.swervedrive.ElevatorSubsystem.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.FunnelSubsystem.FunnelSubsystem;
 import frc.robot.subsystems.swervedrive.LedSubsystem.LedSubsystem;
-import frc.robot.triggers.triggers;
+import frc.robot.triggers.Triggers;
 
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -134,13 +140,18 @@ public class RobotContainer
    private final ClawSubsystem clawSubsystem = new ClawSubsystem();
    private final LedSubsystem ledSubsystem = new LedSubsystem(9, 220);
 
+   Pigeon2 pigeon2 = new Pigeon2(25, "rio");
+   
+
   public RobotContainer()
   {
     // Configure the trigger bindings
     configureBindings();
+    registerAutos();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
+    NamedCommands.registerCommand("LimelightDriveAlignCommand", new LimelightDriveAlignCommand(drivebase, 0.2, -0.78));
   }
 
   /**
@@ -153,15 +164,17 @@ public class RobotContainer
   private void configureBindings()
   {
     //driverCommandXbox.x().whileTrue(new LimelightDriveAlignCommand(drivebase, 1, 0));
-    triggers.povRightX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0.4, -0.9));
-    triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -0.9));
-    driverCommandXbox.y().whileTrue(new LimelightAlign(drivebase));
+    Triggers.povRightX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0.2, -0.65));
+    Triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -0.9));
+    //driverCommandXbox.y().whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -2));
     driverCommandXbox.back().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-    driverCommandXbox.start().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem));
+    driverCommandXbox.povDown().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem, pigeon2));
     driverCommandXbox.rightTrigger(0.1).whileTrue(new Rumble(manipulatorXbox, 0.5));
+    driverCommandXbox.a().whileTrue(new LimelightDriveCommand(drivebase, 0.15, -0.9));
+    driverCommandXbox.y().whileTrue(new SequentialCommandGroup(new LimelightDriveCommand(drivebase, 0.15, 0.9), new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem)));
 
-    manipulatorCommandXbox.povRight().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
-    manipulatorCommandXbox.povLeft().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
+    manipulatorCommandXbox.povLeft().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
+    manipulatorCommandXbox.povRight().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povUp().whileTrue(new PullActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
     manipulatorCommandXbox.povDown().whileTrue(new PushActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
     manipulatorCommandXbox.rightBumper().whileTrue(new MoveKicker(clawSubsystem, SpeedConstants.KICKER_SPEED));
@@ -169,7 +182,9 @@ public class RobotContainer
     manipulatorCommandXbox.a().whileTrue(new MoveToHomePosition(elevatorSubsystem, clawSubsystem));
     manipulatorCommandXbox.y().whileTrue(new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem));
     manipulatorCommandXbox.x().whileTrue(new MoveElevatorMediumCoral(elevatorSubsystem, clawSubsystem));
+    manipulatorCommandXbox.b().whileTrue(new MoveElevatorLowCoral(elevatorSubsystem, clawSubsystem));
     manipulatorCommandXbox.rightTrigger(0.1).whileTrue(new Rumble(driverXbox, 0.5));
+    
 
       // clawSubsystem.setDefaultCommand(
       //   new MovePositioning(clawSubsystem, elevatorSubsystem));
@@ -178,15 +193,9 @@ public class RobotContainer
       new MoveElevator(elevatorSubsystem, clawSubsystem, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getLeftY(), 0.3) * -SpeedConstants.ELEVATOR_SPEED));
 
     clawSubsystem.setDefaultCommand(
-      new MoveClaw(clawSubsystem, elevatorSubsystem, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getRightY(), 0.3) * -SpeedConstants.CLAW_SPEED));
+      new MoveClaw(clawSubsystem, elevatorSubsystem, manipulatorXbox, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getRightY(), 0.3) * -SpeedConstants.CLAW_SPEED));
       
 
-    
-      
-
-
-    
-    
       ledSubsystem.setDefaultCommand(new MovingRainbow(ledSubsystem));
 
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
@@ -201,14 +210,19 @@ public class RobotContainer
 
     
 
-    if (RobotBase.isSimulation())
+    // if (RobotBase.isSimulation())
+    // {
+    //   //drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+    //   drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    //   System.out.println("dang");
+    // } else
     {
+      
+        drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        //System.out.println("fieldrelative");
       //drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    } else
-    {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-      //drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+      
+
     }
 
     if (Robot.isSimulation())
@@ -248,10 +262,34 @@ public class RobotContainer
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand()
-  {
-    // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("SmallTestAuto");
+
+
+  public Command getAutonomousCommand() {
+    //return drivebase.driveCommand(() -> -0.1, () -> 0, () -> 0);
+
+
+    var auto = SmartDashboard.getString("Auto Selector", "MoveOut");
+    System.out.println("Selected Autonomous: " + ((auto == null) ? "[null, cannot find one]" : auto));
+
+    // Verify and autonomous command was able to be found from the Dashboard
+    if (auto == null)
+      return drivebase.getAutonomousCommand(Auton.DEFAULT_AUTO_NAME);
+
+    // Verify the command actually exists. This will return the command if its in
+    // the list. (MUST match)
+    for (var i = 0; i < Auton.AUTO_NAMES.length; i++)
+      if (Auton.AUTO_NAMES[i].equals(auto))  
+        return drivebase.getAutonomousCommand(auto);
+
+    // Dont try to run a autonomous that isn't verifiably in the list
+    System.out.println("This autonomous is not in the list!!!");
+    System.out.println(" . Make sure you select one from the dropdown and DONT CHANGE IT.");
+    System.out.println("    > It MUST be in the list to be run.");
+    return drivebase.getAutonomousCommand(Auton.DEFAULT_AUTO_NAME);
+  }
+
+  private void registerAutos() {
+    SmartDashboard.putStringArray("Auto List", Auton.AUTO_NAMES);
   }
 
   public void setMotorBrake(boolean brake)
@@ -259,8 +297,6 @@ public class RobotContainer
     drivebase.setMotorBrake(brake);
   }
 
-  // public static Trigger povRightX(XboxController controller) {
-  //     return new Trigger(() -> controller.getXButton() && controller.getPOVCount() == 90);
-  // }
+
 
 }

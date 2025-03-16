@@ -23,9 +23,13 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void move(Double speed){
-        // if(speed > 0 && getAbsoluteEncoderValue() - AbsoluteEncoderOffsets.ELEVATOR_OFFSET >= LimitConstants.CLAW_UPPER_LIMIT){
-        //     speed = 0d;
-        // }
+         if(speed > 0 && getEncoderValue() >= 0){
+             speed = 0.0;
+         }
+         if(speed < 0 && getEncoderValue() <= LimitConstants.CLAW_LOWER_LIMIT){
+            speed = 0.0;
+        }
+        
         // if(speed < 0 && getAbsoluteEncoderValue() - AbsoluteEncoderOffsets.ELEVATOR_OFFSET <= LimitConstants.CLAW_LOWER_LIMIT){
         //     speed = 0d;
         // }

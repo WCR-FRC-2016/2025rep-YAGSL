@@ -1,23 +1,28 @@
 package frc.robot.commands.swervedrive.drivebase;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
+    import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.utilities.NetworkTables;
 
-public class LimelightDriveAlignCommand extends Command {
+public class LimelightDriveCommand extends Command{
+
     private SwerveSubsystem driveBase;
-    private double desiredAngle;
+
     private double offsetX;
     private double offsetZ;
-    private double yaw;
+    
     private static double desiredDistanceZ = -1;
     private static double desiredDistanceX = 0;
     private double actualDistanceZ;
     private double actualDistanceX;
+    private double yaw;
+    private double desiredAngle;
+    double tx = NetworkTables.getTx();
+    private double currentAngle = tx ;
 
     // Uses offsetX and offsetY to change the position of the alignment in robotcontainer and not have to create multiple commands for alignment
-    public LimelightDriveAlignCommand(SwerveSubsystem swerve, double offsetX, double offsetZ) {
+    public LimelightDriveCommand(SwerveSubsystem swerve, double offsetX, double offsetZ) {
         driveBase = swerve;
         this.offsetX = offsetX;
         this.offsetZ = offsetZ;
@@ -26,7 +31,7 @@ public class LimelightDriveAlignCommand extends Command {
 
     @Override
     public void initialize() {
-
+        System.out.println("***ran auto amp command***");
     }
 
     @Override
@@ -65,27 +70,44 @@ public class LimelightDriveAlignCommand extends Command {
         desiredDistanceZ = offsetZ;
         System.out.println("distance: " + botpose[2] + " | angle: " + NetworkTables.getTx());
         actualDistanceX = botpose[0];
+        //actualDistanceX = 5.7858381271362305;
+
         actualDistanceZ = botpose[2];
         yaw = botpose[5];
         double distanceToMoveZ = (actualDistanceZ - desiredDistanceZ);
         double distanceToMoveX = -1 * (actualDistanceX - desiredDistanceX);
-        desiredAngle = driveBase.getHeading().getDegrees() - yaw + 0.01; // !!!!!!!CHANGED FROM NetworkTables.getTx() !!!!!!!
-        driveBase.drive(distanceToMoveZ * 0.3, distanceToMoveX * 0.3, Math.toRadians(desiredAngle) + 0.02);
+        desiredAngle = driveBase.getHeading().getDegrees() - 5.7858381271362305; // !!!!!!!CHANGED FROM NetworkTables.getTx() !!!!!!!
+        driveBase.drive(distanceToMoveZ * 0.4, distanceToMoveX * 0.4, Math.toRadians(desiredAngle));
         //System.out.println("yaw: " + yaw);
         
     }
-
-    // @Override
-    // public boolean isFinished() {
+    
+    @Override
+     public boolean isFinished() {
 
     //     // return Math.abs( currentAngle) <= 0.1d;
-    //     if (Math.abs(actualDistanceX) <= 3d && Math.abs(desiredDistanceZ) - 0.25 <= Math.abs(actualDistanceZ) && Math.abs(actualDistanceZ) <= Math.abs(desiredDistanceZ) + 0.5) {
-    //         System.out.println("Finished alignment");
-    //         return true;
-    //     }
-    //     return false;
-    // }
+       /* if (Math.abs(actualDistanceX) <= 0.3d && Math.abs(desiredDistanceZ) - 0.25 <= Math.abs(actualDistanceZ) && Math.abs(actualDistanceZ) <= Math.abs(desiredDistanceZ) + 0.5) {
+            System.out.println("Finished alignment");
+            return true;
+        }
+           return false;
+        
+        
+        }*/
+        if (Math.abs(desiredAngle) <= 0.5 && Math.abs(desiredDistanceZ) - 0.25 <= Math.abs(actualDistanceZ) && Math.abs(actualDistanceZ) <= Math.abs(desiredDistanceZ) + 0.5) {
+            System.out.println("Finished alignment");
+            return true;
+        }
+           return false;
+        
+        
+        }
 
+
+      //  @Override
+        //public void end( boolean isFinished() ==true){
+        //    SwerveSubsystem.stop();
+        //}
     // public double getTx() {
 
     //     return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0.0);
@@ -100,3 +122,5 @@ public class LimelightDriveAlignCommand extends Command {
     // }       
     
 }
+
+

@@ -1,5 +1,6 @@
 package frc.robot.utilities;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class NetworkTables {
@@ -20,5 +21,7 @@ public class NetworkTables {
     public static double getAprilTagID(){
         return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getDouble(0.0);
     }
+
+
     
 }

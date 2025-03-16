@@ -23,4 +23,8 @@ public class ActuatorSubsystem extends SubsystemBase {
     public void stop(){
         actuator.set(0.0);
     }
+
+    public double getCurrent(){
+        return actuator.getOutputCurrent();
+    }
 }

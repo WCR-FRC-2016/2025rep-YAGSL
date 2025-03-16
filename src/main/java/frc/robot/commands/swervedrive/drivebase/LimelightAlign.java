@@ -23,18 +23,21 @@ public class LimelightAlign extends Command{
         //System.out.println(tx);
     }
 
-    // @Override 
-    // public boolean isFinished(){
+     @Override 
+    public boolean isFinished(){
 
-    //      if(NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 1) {
-    //         return true;
-    //     }
+        if(NetworkTables.getTv() && Math.abs(NetworkTables.getTx()) < 0.1) {
+            return true;
+        }
 
-    //     return false;
+         return false;
 
-    // }
+     }
+
+   // @Override
+    //public void end(boolean isFinished==true){
+       // SwerveSubsystem.stop();
+    }
 
     
 
-    
-}

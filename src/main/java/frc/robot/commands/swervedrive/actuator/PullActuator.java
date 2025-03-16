@@ -16,12 +16,10 @@ public class PullActuator extends Command {
     @Override
     public void execute(){
         actuatorSubsystem.pull(speed);
-        System.out.println("pulling");
     }
 
     @Override
     public void end(boolean interrupted){
         actuatorSubsystem.stop();
-        System.out.println("stoped pulling");
     }
 }

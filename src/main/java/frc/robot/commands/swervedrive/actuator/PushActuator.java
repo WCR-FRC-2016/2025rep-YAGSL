@@ -15,7 +15,11 @@ public class PushActuator extends Command {
 
     @Override
     public void execute(){
+        // if(actuatorSubsystem.getCurrent() > 7){
+        //     speed = 0;
+        // }
         actuatorSubsystem.push(speed);
+        System.out.println(actuatorSubsystem.getCurrent());
     }
 
     @Override

@@ -4,6 +4,8 @@
 
 package frc.robot.utilities;
 
+import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -23,6 +25,8 @@ public final class Constants
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);//14.5
+  //public static final RobotConfig robotConfig;
+
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
 //  public static final class AutonConstants
@@ -75,12 +79,22 @@ public final class Constants
   public static class AutoConstants{
     public static final double HIGH_CORAL_CLAW_POSITION = -0.182861328125;
     public static final double MIDDLE_CORAL_CLAW_POSITION = -0.193359375;
-    public static final double LOW_CORAL_CLAW_POSITION = -0.9;
-    public static final double HOME_CORAL_CLAW_POSITION = 0.0;
+    public static final double LOW_CORAL_CLAW_POSITION = -0.18;
+    public static final double HOME_CORAL_CLAW_POSITION = 0.15;
+    public static final double LOW_CORAL_ELEVATOR_POSITION = 30;
     public static final double HIGH_CORAL_ELEVATOR_POSITION = 330;
     public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 215.9638671875;
-    public static final double HOME_ELEVATOR_POSITION = 20;
+    public static final double HOME_ELEVATOR_POSITION = 24;
 
+  }
+
+  public static final class Auton {
+    public static final String DEFAULT_AUTO_NAME = "MoveOut";
+
+    public static final String[] AUTO_NAMES = {
+      "MoveOut",
+      "MoveAndPoint"
+    };
   }
 
   
