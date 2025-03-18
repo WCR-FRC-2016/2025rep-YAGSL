@@ -84,9 +84,9 @@ public class RobotContainer
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverCommandXbox.getLeftY(),
-                                                                () -> driverCommandXbox.getLeftX())
-                                                            .withControllerRotationAxis(driverCommandXbox::getRightX)
+                                                                () -> -driverCommandXbox.getLeftY(),
+                                                                () -> -driverCommandXbox.getLeftX())
+                                                            .withControllerRotationAxis(() -> -driverCommandXbox.getRightX())
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
@@ -173,6 +173,7 @@ public class RobotContainer
     driverCommandXbox.a().whileTrue(new LimelightDriveCommand(drivebase, 0.15, -0.9));
     driverCommandXbox.y().whileTrue(new SequentialCommandGroup(new LimelightDriveCommand(drivebase, 0.15, 0.9), new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem)));
 
+    manipulatorCommandXbox.povDown().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem, pigeon2));
     manipulatorCommandXbox.povLeft().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povRight().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povUp().whileTrue(new PullActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
