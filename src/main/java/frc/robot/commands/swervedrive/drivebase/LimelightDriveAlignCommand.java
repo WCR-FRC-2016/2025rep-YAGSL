@@ -15,6 +15,7 @@ public class LimelightDriveAlignCommand extends Command {
     private static double desiredDistanceX = 0;
     private double actualDistanceZ;
     private double actualDistanceX;
+    private boolean aligned;
 
     // Uses offsetX and offsetY to change the position of the alignment in robotcontainer and not have to create multiple commands for alignment
     public LimelightDriveAlignCommand(SwerveSubsystem swerve, double offsetX, double offsetZ) {
@@ -26,7 +27,7 @@ public class LimelightDriveAlignCommand extends Command {
 
     @Override
     public void initialize() {
-
+        aligned = false;
     }
 
     @Override
@@ -63,28 +64,42 @@ public class LimelightDriveAlignCommand extends Command {
         // }
         desiredDistanceX = offsetX;
         desiredDistanceZ = offsetZ;
-        System.out.println("distance: " + botpose[2] + " | angle: " + NetworkTables.getTx());
+        System.out.println("distance: " + botpose[2] + " | tx: " + NetworkTables.getTx());
         actualDistanceX = botpose[0];
         actualDistanceZ = botpose[2];
-        yaw = botpose[5];
-        double distanceToMoveZ = (actualDistanceZ - desiredDistanceZ);
-        double distanceToMoveX = -1 * (actualDistanceX - desiredDistanceX);
-        desiredAngle = driveBase.getHeading().getDegrees() - yaw + 0.01; // !!!!!!!CHANGED FROM NetworkTables.getTx() !!!!!!!
-        driveBase.drive(distanceToMoveZ * 0.3, distanceToMoveX * 0.3, Math.toRadians(desiredAngle) + 0.02);
-        //System.out.println("yaw: " + yaw);
+        yaw = botpose[4];
+        double distanceToMoveZ = -(actualDistanceZ - desiredDistanceZ);
+        double distanceToMoveX = (actualDistanceX - desiredDistanceX);
+        desiredAngle = driveBase.getHeading().getDegrees() + (yaw/2); // !!!!!!!CHANGED FROM NetworkTables.getTx() !!!!!!!
+
+        // if (Math.abs(actualDistanceX) <= 0.05d + Math.abs(offsetX) && Math.abs(actualDistanceZ) <= 0.05 + Math.abs(offsetZ) && Math.abs(yaw) <= 1) {
+        //     System.out.println("Finished alignment");
+        //     aligned = true;
+        // }
+
+        // if(!aligned){
+        //     driveBase.drive((distanceToMoveZ - offsetZ) * 0.3, (distanceToMoveX - offsetX) * 0.3, Math.toRadians(desiredAngle));
+        // }
+
+        // if(aligned){
+        //     driveBase.drive((distanceToMoveZ) * 0.3 , (distanceToMoveX) * 0.3, driveBase.getHeading().getRadians());
+        // }
+        driveBase.drive((distanceToMoveZ) * 0.3 , (distanceToMoveX) * 0.3, Math.toRadians(desiredAngle));
+        
+        System.out.println("angle: " + desiredAngle);
         
     }
 
-    // @Override
-    // public boolean isFinished() {
+    @Override
+    public boolean isFinished() {
 
-    //     // return Math.abs( currentAngle) <= 0.1d;
-    //     if (Math.abs(actualDistanceX) <= 3d && Math.abs(desiredDistanceZ) - 0.25 <= Math.abs(actualDistanceZ) && Math.abs(actualDistanceZ) <= Math.abs(desiredDistanceZ) + 0.5) {
-    //         System.out.println("Finished alignment");
-    //         return true;
-    //     }
-    //     return false;
-    // }
+        // return Math.abs( currentAngle) <= 0.1d;
+        if (Math.abs(actualDistanceX) <= 0.05d + Math.abs(offsetX) && Math.abs(actualDistanceZ) <= 0.05 + Math.abs(offsetZ) && Math.abs(yaw) <= 1) {
+            System.out.println("Finished alignment");
+            return true;
+        }
+        return false;
+    }
 
     // public double getTx() {
 

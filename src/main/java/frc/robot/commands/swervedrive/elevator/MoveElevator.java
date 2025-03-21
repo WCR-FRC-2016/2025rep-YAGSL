@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.ClawSubsystem.ClawSubsystem;
 import frc.robot.subsystems.swervedrive.ElevatorSubsystem.ElevatorSubsystem;
+import frc.robot.utilities.Constants.LimitConstants;
 
 public class MoveElevator extends Command {
     ElevatorSubsystem elevatorSubsystem;
@@ -23,13 +24,17 @@ public class MoveElevator extends Command {
     public void execute(){
         speed = velocity.getAsDouble();
         //if(elevatorSubsystem.getEncoderValue() < 10){
-        if(speed > 0 && elevatorSubsystem.getEncoderValue() >= 130 && clawSubsystem.getEncoderValue() > -0.07){
+        if(speed > 0 && elevatorSubsystem.getEncoderValue() >= LimitConstants.ELEVATOR_CLAW_UP_HEIGHT_LIMIT && clawSubsystem.getEncoderValue() > -0.07){
             speed = 0;
             System.out.println("preventing self destruction");
         }
 
-        if(speed > 0 && elevatorSubsystem.getEncoderValue() >= 330){
+        if(speed > 0 && elevatorSubsystem.getEncoderValue() >= LimitConstants.ELEVATOR_HEIGHT_LIMIT){
             speed = 0;
+        }
+
+        if(speed < 0){
+            speed /= 2;
         }
         elevatorSubsystem.move(speed);
     }

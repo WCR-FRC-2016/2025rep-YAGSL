@@ -19,7 +19,7 @@ public class ClawSubsystem extends SubsystemBase {
     PIDController pid = new PIDController(1.5, 0, 0);
     public ClawSubsystem(){
         claw = new SparkMax(10, MotorType.kBrushed);
-        kicker = new SparkMax(8, MotorType.kBrushed);
+        kicker = new SparkMax(8, MotorType.kBrushless);
     }
 
     public void move(Double speed){

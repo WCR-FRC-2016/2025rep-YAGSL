@@ -55,16 +55,19 @@ public final class Constants
 
   public static class SpeedConstants
   {
-    public static final double ELEVATOR_SPEED = 0.95;
+    public static final double ELEVATOR_SPEED_UP = 0.75;
     public static final double CLAW_SPEED = 0.3;
     public static final double KICKER_SPEED = 0.9;
     public static final double FUNNEL_SPEED = 0.7;
     public static final double ACTUATOR_SPEED = 0.9;
+    public static final double ELEVATOR_P_UP = 0.1;
+    public static final double ELEVATOR_P_DOWN = 0.05;
     
   }
 
   public static class LimitConstants{
-    public static final double ELEVATOR_HEIGHT_LIMIT = 300;
+    public static final double ELEVATOR_HEIGHT_LIMIT = 83.2;
+    public static final double ELEVATOR_CLAW_UP_HEIGHT_LIMIT = 31.88;
     public static final double CLAW_UPPER_LIMIT = 0.0;
     public static final double CLAW_LOWER_LIMIT = -0.5737;
     ;
@@ -82,9 +85,9 @@ public final class Constants
     public static final double LOW_CORAL_CLAW_POSITION = -0.18;
     public static final double HOME_CORAL_CLAW_POSITION = 0.15;
     public static final double LOW_CORAL_ELEVATOR_POSITION = 30;
-    public static final double HIGH_CORAL_ELEVATOR_POSITION = 330;
-    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 215.9638671875;
-    public static final double HOME_ELEVATOR_POSITION = 24;
+    public static final double HIGH_CORAL_ELEVATOR_POSITION = 79;
+    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 59.89;
+    public static final double HOME_ELEVATOR_POSITION = 5.6904752;
 
   }
 
@@ -93,7 +96,8 @@ public final class Constants
 
     public static final String[] AUTO_NAMES = {
       "MoveOut",
-      "MoveAndPoint"
+      "MoveAndPoint",
+      "SmallTestAuto"
     };
   }
 

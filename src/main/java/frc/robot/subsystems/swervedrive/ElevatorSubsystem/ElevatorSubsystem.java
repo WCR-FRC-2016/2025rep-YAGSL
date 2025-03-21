@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.Constants.AbsoluteEncoderOffsets;
@@ -15,9 +16,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     double offset;
     double upperLimit = LimitConstants.ELEVATOR_HEIGHT_LIMIT;
     DigitalInput bottomMagEncoder = new DigitalInput(0);
+    public AnalogInput ultrasonicSensor = new AnalogInput(1);
     public ElevatorSubsystem(){
         elevator = new SparkMax(6, MotorType.kBrushless);
-        pid.setTolerance(5);
+        pid.setTolerance(1);
     }
 
     public void move(double speed){     
@@ -33,8 +35,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    public void moveTo(double setpoint){
-        elevator.set(pid.calculate(elevator.getEncoder().getPosition() - offset, setpoint));
+    public void moveTo(double setpoint, double p){
+        var currentPoint = elevator.getEncoder().getPosition();
+
+        if(setpoint < currentPoint) {
+            pid.setP(0.05);
+        } else {
+            pid.setP(0.1);
+        }
+
+        // pid.setP(p);
+        elevator.set(pid.calculate(elevator.getEncoder().getPosition()/* - offset*/, setpoint));
     }
 
     public double getEncoderValue(){

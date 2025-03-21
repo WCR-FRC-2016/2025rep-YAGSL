@@ -6,6 +6,7 @@ package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -20,6 +21,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,8 +31,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -41,11 +45,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.utilities.Constants;
+import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.NetworkTables;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
@@ -55,20 +61,20 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
+import swervelib.parser.SwerveModuleConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 
 public class SwerveSubsystem extends SubsystemBase
 {
 
-  /**
-   * Swerve drive object.
-   */
-  private final SwerveDrive         swerveDrive;
+  private final SwerveDrive swerveDrive;
   /**
    * AprilTag field layout.
    */
@@ -76,11 +82,44 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean             visionDriveTest     = false;
+  private final boolean             visionDriveTest     = true;
+
+  private Pigeon2 pigeon2 = new Pigeon2(25, "rio");
   /**
    * PhotonVision class to keep an accurate odometry.
    */
   private Vision vision;
+
+  // private final Translation2d m_frontLeftLocation = new Translation2d(0.277, 0.277);
+  // private final Translation2d m_frontRightLocation = new Translation2d(0.277, -0.277);
+  // private final Translation2d m_backLeftLocation = new Translation2d(-0.277, 0.277);
+  // private final Translation2d m_backRightLocation = new Translation2d(-0.277, -0.277);
+
+  // private Map<String,SwerveModule> modules = swerveDrive.getModuleMap();
+  // private final SwerveModule m_frontLeft = modules.get("frontLeft");
+  // private final SwerveModule m_frontRight = modules.get("frontRight");
+  // private final SwerveModule m_backLeft = modules.get("backLeft");
+  // private final SwerveModule m_backRight = modules.get("backRight");
+
+  // private final SwerveDriveKinematics m_kinematics =
+  //     new SwerveDriveKinematics(
+  //         m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+
+  // private final SwerveDrivePoseEstimator m_poseEstimator =
+  //     new SwerveDrivePoseEstimator(
+  //         m_kinematics,
+  //         pigeon2.getRotation2d(),
+  //         new SwerveModulePosition[] {
+  //           m_frontLeft.getPosition(),
+  //           m_frontRight.getPosition(),
+  //           m_backLeft.getPosition(),
+  //           m_backRight.getPosition()
+  //         },
+  //         new Pose2d(),
+  //         VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+  //         VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+
+   
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -146,12 +185,14 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
-    // When vision is enabled we must manually update odometry in SwerveDrive
+    //When vision is enabled we must manually update odometry in SwerveDrive
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
     }
+    updateVisionOdometry();
+    addLimelightVisionReading();
   }
 
   @Override
@@ -174,7 +215,7 @@ public class SwerveSubsystem extends SubsystemBase
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
       AutoBuilder.configure(
-          () -> getPose(),
+          this::getPose,
           // Robot pose supplier
           this::resetOdometry,
           // Method to reset odometry (will be called if your auto has a starting pose)
@@ -735,7 +776,35 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public void addLimelightVisionReading(){
-    swerveDrive.addVisionMeasurement(new Pose2d(), 0);
+    boolean doRejectUpdate = false;
+
+    
+    LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    if(Math.abs(pigeon2.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+    {
+      doRejectUpdate = true;
+    }
+    if(mt2.tagCount == 0)
+    {
+      doRejectUpdate = true;
+    }
+    if(!doRejectUpdate)
+    {
+      swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
+          mt2.pose,
+          mt2.timestampSeconds);
+    }
+  }
+
+  public void updateVisionOdometry(){
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    if(limelightMeasurement.tagCount >= 2)
+    {
+      swerveDrive.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds, VecBuilder.fill(.7,.7,9999999));
+    }
+    
   }
 
   /**

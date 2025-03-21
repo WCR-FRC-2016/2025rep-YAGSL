@@ -140,7 +140,7 @@ public class RobotContainer
    private final ClawSubsystem clawSubsystem = new ClawSubsystem();
    private final LedSubsystem ledSubsystem = new LedSubsystem(9, 220);
 
-   Pigeon2 pigeon2 = new Pigeon2(25, "rio");
+   public Pigeon2 pigeon2 = new Pigeon2(25, "rio");
    
 
   public RobotContainer()
@@ -151,7 +151,7 @@ public class RobotContainer
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
-    NamedCommands.registerCommand("LimelightDriveAlignCommand", new LimelightDriveAlignCommand(drivebase, 0.2, -0.78));
+    NamedCommands.registerCommand("LimelightDriveAlignCommand", new LimelightDriveAlignCommand(drivebase, 0.25, -0.78));
   }
 
   /**
@@ -164,7 +164,7 @@ public class RobotContainer
   private void configureBindings()
   {
     //driverCommandXbox.x().whileTrue(new LimelightDriveAlignCommand(drivebase, 1, 0));
-    Triggers.povRightX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0.2, -0.65));
+    Triggers.povRightX(driverXbox).whileTrue(new ParallelCommandGroup(new LimelightDriveAlignCommand(drivebase, 0.18, -0.7), new MoveElevatorMediumCoral(elevatorSubsystem, clawSubsystem)));
     Triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -0.9));
     //driverCommandXbox.y().whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -2));
     driverCommandXbox.back().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
@@ -173,7 +173,7 @@ public class RobotContainer
     driverCommandXbox.a().whileTrue(new LimelightDriveCommand(drivebase, 0.15, -0.9));
     driverCommandXbox.y().whileTrue(new SequentialCommandGroup(new LimelightDriveCommand(drivebase, 0.15, 0.9), new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem)));
 
-    manipulatorCommandXbox.povDown().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem, pigeon2));
+    manipulatorCommandXbox.start().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem, pigeon2));
     manipulatorCommandXbox.povLeft().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povRight().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povUp().whileTrue(new PullActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
@@ -191,7 +191,7 @@ public class RobotContainer
       //   new MovePositioning(clawSubsystem, elevatorSubsystem));
 
     elevatorSubsystem.setDefaultCommand(
-      new MoveElevator(elevatorSubsystem, clawSubsystem, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getLeftY(), 0.3) * -SpeedConstants.ELEVATOR_SPEED));
+      new MoveElevator(elevatorSubsystem, clawSubsystem, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getLeftY(), 0.3) * -SpeedConstants.ELEVATOR_SPEED_UP));
 
     clawSubsystem.setDefaultCommand(
       new MoveClaw(clawSubsystem, elevatorSubsystem, manipulatorXbox, () -> MathUtil.applyDeadband(manipulatorCommandXbox.getRightY(), 0.3) * -SpeedConstants.CLAW_SPEED));
