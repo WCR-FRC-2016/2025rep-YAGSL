@@ -34,7 +34,7 @@ public class MoveToHomePosition extends Command {
             clawSubsystem.moveTo(AutoConstants.HOME_CORAL_CLAW_POSITION);
         }
         
-        elevatorSubsystem.moveTo(AutoConstants.HOME_ELEVATOR_POSITION, p);
+        elevatorSubsystem.moveTo(AutoConstants.HOME_ELEVATOR_POSITION);
     }
 
 }

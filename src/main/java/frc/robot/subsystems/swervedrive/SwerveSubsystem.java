@@ -47,6 +47,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.utilities.Constants;
 import frc.robot.utilities.LimelightHelpers;
 import frc.robot.utilities.NetworkTables;
+import frc.robot.Robot;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -89,6 +90,8 @@ public class SwerveSubsystem extends SubsystemBase
    * PhotonVision class to keep an accurate odometry.
    */
   private Vision vision;
+
+  
 
   // private final Translation2d m_frontLeftLocation = new Translation2d(0.277, 0.277);
   // private final Translation2d m_frontRightLocation = new Translation2d(0.277, -0.277);
@@ -182,17 +185,29 @@ public class SwerveSubsystem extends SubsystemBase
     vision = new Vision(swerveDrive::getPose, swerveDrive.field);
   }
 
+
+
+
+  
+
   @Override
   public void periodic()
   {
     //When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest)
-    {
-      swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
+    // if (visionDriveTest)
+    // {
+    //   swerveDrive.updateOdometry();
+    //   vision.updatePoseEstimation(swerveDrive);
+    // }
+    //updateVisionOdometry();
+    if(DriverStation.isAutonomous()){
+      //addLimelightVisionReading();
+      updateVisionOdometry();
     }
-    updateVisionOdometry();
-    addLimelightVisionReading();
+    swerveDrive.updateOdometry();
+
+    //vision.updatePoseEstimation(swerveDrive);
+    
   }
 
   @Override
@@ -791,7 +806,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
     if(!doRejectUpdate)
     {
-      swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      swerveDrive.swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.9 ,0.9,0.9));
       swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(
           mt2.pose,
           mt2.timestampSeconds);
@@ -800,9 +815,9 @@ public class SwerveSubsystem extends SubsystemBase
 
   public void updateVisionOdometry(){
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-    if(limelightMeasurement.tagCount >= 2)
+    if(limelightMeasurement.tagCount >= 1)
     {
-      swerveDrive.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds, VecBuilder.fill(.7,.7,9999999));
+      swerveDrive.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds, VecBuilder.fill(0.9,0.9,0.9));
     }
     
   }

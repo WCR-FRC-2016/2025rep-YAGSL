@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    public void moveTo(double setpoint, double p){
+    public void moveTo(double setpoint){
         var currentPoint = elevator.getEncoder().getPosition();
 
         if(setpoint < currentPoint) {

@@ -24,7 +24,7 @@ public class MoveElevator extends Command {
     public void execute(){
         speed = velocity.getAsDouble();
         //if(elevatorSubsystem.getEncoderValue() < 10){
-        if(speed > 0 && elevatorSubsystem.getEncoderValue() >= LimitConstants.ELEVATOR_CLAW_UP_HEIGHT_LIMIT && clawSubsystem.getEncoderValue() > -0.07){
+        if(speed > 0 && elevatorSubsystem.getEncoderValue() >= LimitConstants.ELEVATOR_CLAW_UP_HEIGHT_LIMIT && clawSubsystem.getEncoderValue() > -0.09){
             speed = 0;
             System.out.println("preventing self destruction");
         }

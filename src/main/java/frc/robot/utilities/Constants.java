@@ -57,7 +57,7 @@ public final class Constants
   {
     public static final double ELEVATOR_SPEED_UP = 0.75;
     public static final double CLAW_SPEED = 0.3;
-    public static final double KICKER_SPEED = 0.9;
+    public static final double KICKER_SPEED = 0.80;
     public static final double FUNNEL_SPEED = 0.7;
     public static final double ACTUATOR_SPEED = 0.9;
     public static final double ELEVATOR_P_UP = 0.1;
@@ -66,7 +66,7 @@ public final class Constants
   }
 
   public static class LimitConstants{
-    public static final double ELEVATOR_HEIGHT_LIMIT = 83.2;
+    public static final double ELEVATOR_HEIGHT_LIMIT = 83.75;
     public static final double ELEVATOR_CLAW_UP_HEIGHT_LIMIT = 31.88;
     public static final double CLAW_UPPER_LIMIT = 0.0;
     public static final double CLAW_LOWER_LIMIT = -0.5737;
@@ -80,14 +80,14 @@ public final class Constants
   }
 
   public static class AutoConstants{
-    public static final double HIGH_CORAL_CLAW_POSITION = -0.182861328125;
-    public static final double MIDDLE_CORAL_CLAW_POSITION = -0.193359375;
+    public static final double HIGH_CORAL_CLAW_POSITION = -0.19061328125;
+    public static final double MIDDLE_CORAL_CLAW_POSITION = -0.173359375;
     public static final double LOW_CORAL_CLAW_POSITION = -0.18;
     public static final double HOME_CORAL_CLAW_POSITION = 0.15;
     public static final double LOW_CORAL_ELEVATOR_POSITION = 30;
-    public static final double HIGH_CORAL_ELEVATOR_POSITION = 79;
-    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 59.89;
-    public static final double HOME_ELEVATOR_POSITION = 5.6904752;
+    public static final double HIGH_CORAL_ELEVATOR_POSITION = 84;
+    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 55.89;
+    public static final double HOME_ELEVATOR_POSITION = 1;
 
   }
 

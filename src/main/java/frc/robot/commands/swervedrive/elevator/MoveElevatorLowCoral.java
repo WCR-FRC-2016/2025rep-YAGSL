@@ -23,18 +23,12 @@ public class MoveElevatorLowCoral extends Command {
 
     @Override
     public void execute() {
-        if(clawSubsystem.getEncoderValue() >= -0.10){
-            p = 0;
-        }
-        if(AutoConstants.LOW_CORAL_ELEVATOR_POSITION - elevatorSubsystem.getEncoderValue() < 0)   {
-            p = SpeedConstants.ELEVATOR_P_DOWN;
-        }
-        else{
-            p = SpeedConstants.ELEVATOR_P_UP;
+        if(clawSubsystem.getEncoderValue() <= -0.15){
+            elevatorSubsystem.moveTo(AutoConstants.LOW_CORAL_ELEVATOR_POSITION);
         }
 
         clawSubsystem.moveTo(AutoConstants.LOW_CORAL_CLAW_POSITION);
-        elevatorSubsystem.moveTo(AutoConstants.LOW_CORAL_ELEVATOR_POSITION, p);
+
 }
 
 }

@@ -33,6 +33,7 @@ import frc.robot.commands.swervedrive.Led.LedControll;
 import frc.robot.commands.swervedrive.Led.MovingRainbow;
 import frc.robot.commands.swervedrive.actuator.PullActuator;
 import frc.robot.commands.swervedrive.actuator.PushActuator;
+import frc.robot.commands.swervedrive.auto.OutTakeAuto;
 import frc.robot.commands.swervedrive.claw.MoveClaw;
 import frc.robot.commands.swervedrive.claw.MoveClawHighCoral;
 import frc.robot.commands.swervedrive.claw.MoveKicker;
@@ -41,7 +42,6 @@ import frc.robot.commands.swervedrive.claw.PlaceCoral;
 import frc.robot.commands.swervedrive.debug.Debug;
 import frc.robot.commands.swervedrive.drivebase.LimelightAlign;
 import frc.robot.commands.swervedrive.drivebase.LimelightDriveAlignCommand;
-import frc.robot.commands.swervedrive.drivebase.LimelightDriveCommand;
 import frc.robot.commands.swervedrive.elevator.MoveElevator;
 import frc.robot.commands.swervedrive.elevator.MoveElevatorHighCoral;
 import frc.robot.commands.swervedrive.elevator.MoveElevatorLowCoral;
@@ -152,6 +152,7 @@ public class RobotContainer
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
     NamedCommands.registerCommand("LimelightDriveAlignCommand", new LimelightDriveAlignCommand(drivebase, 0.25, -0.78));
+    NamedCommands.registerCommand("OutTakeAuto", new OutTakeAuto(clawSubsystem));
   }
 
   /**
@@ -164,22 +165,20 @@ public class RobotContainer
   private void configureBindings()
   {
     //driverCommandXbox.x().whileTrue(new LimelightDriveAlignCommand(drivebase, 1, 0));
-    Triggers.povRightX(driverXbox).whileTrue(new ParallelCommandGroup(new LimelightDriveAlignCommand(drivebase, 0.18, -0.7), new MoveElevatorMediumCoral(elevatorSubsystem, clawSubsystem)));
-    Triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -0.9));
+    Triggers.povRightX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, 0.18, -0.60));
+    Triggers.povLeftX(driverXbox).whileTrue(new LimelightDriveAlignCommand(drivebase, -0.18, -0.60));
     //driverCommandXbox.y().whileTrue(new LimelightDriveAlignCommand(drivebase, 0, -2));
     driverCommandXbox.back().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
     driverCommandXbox.povDown().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem, pigeon2));
     driverCommandXbox.rightTrigger(0.1).whileTrue(new Rumble(manipulatorXbox, 0.5));
-    driverCommandXbox.a().whileTrue(new LimelightDriveCommand(drivebase, 0.15, -0.9));
-    driverCommandXbox.y().whileTrue(new SequentialCommandGroup(new LimelightDriveCommand(drivebase, 0.15, 0.9), new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem)));
 
     manipulatorCommandXbox.start().whileTrue(new Debug(elevatorSubsystem, clawSubsystem, funnelSubsystem, pigeon2));
     manipulatorCommandXbox.povLeft().whileTrue(new MoveFunnelUp(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povRight().whileTrue(new MoveFunnelDown(funnelSubsystem, SpeedConstants.FUNNEL_SPEED));
     manipulatorCommandXbox.povUp().whileTrue(new PullActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
     manipulatorCommandXbox.povDown().whileTrue(new PushActuator(actuatorSubsystem, SpeedConstants.ACTUATOR_SPEED));
-    manipulatorCommandXbox.rightBumper().whileTrue(new MoveKicker(clawSubsystem, SpeedConstants.KICKER_SPEED));
-    manipulatorCommandXbox.leftBumper().whileTrue(new MoveKicker(clawSubsystem, -SpeedConstants.KICKER_SPEED));
+    manipulatorCommandXbox.rightBumper().whileTrue(new MoveKicker(clawSubsystem, -SpeedConstants.KICKER_SPEED));
+    manipulatorCommandXbox.leftBumper().whileTrue(new MoveKicker(clawSubsystem, SpeedConstants.KICKER_SPEED));
     manipulatorCommandXbox.a().whileTrue(new MoveToHomePosition(elevatorSubsystem, clawSubsystem));
     manipulatorCommandXbox.y().whileTrue(new MoveElevatorHighCoral(elevatorSubsystem, clawSubsystem));
     manipulatorCommandXbox.x().whileTrue(new MoveElevatorMediumCoral(elevatorSubsystem, clawSubsystem));
@@ -297,6 +296,11 @@ public class RobotContainer
   {
     drivebase.setMotorBrake(brake);
   }
+
+
+
+
+
 
 
 
