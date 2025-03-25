@@ -97,7 +97,8 @@ public final class Constants
     public static final String[] AUTO_NAMES = {
       "MoveOut",
       "MoveAndPoint",
-      "SmallTestAuto"
+      "SmallTestAuto",
+      "BackL2"
     };
   }
 

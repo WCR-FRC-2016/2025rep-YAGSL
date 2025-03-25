@@ -17,15 +17,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "OutTakeAuto"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutTakeAuto"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TrophMove"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Back",
   "choreoAuto": false
 }

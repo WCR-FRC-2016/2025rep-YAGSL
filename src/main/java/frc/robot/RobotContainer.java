@@ -33,6 +33,7 @@ import frc.robot.commands.swervedrive.Led.LedControll;
 import frc.robot.commands.swervedrive.Led.MovingRainbow;
 import frc.robot.commands.swervedrive.actuator.PullActuator;
 import frc.robot.commands.swervedrive.actuator.PushActuator;
+import frc.robot.commands.swervedrive.auto.MoveElevatorMediumCoralAuto;
 import frc.robot.commands.swervedrive.auto.OutTakeAuto;
 import frc.robot.commands.swervedrive.claw.MoveClaw;
 import frc.robot.commands.swervedrive.claw.MoveClawHighCoral;
@@ -145,14 +146,15 @@ public class RobotContainer
 
   public RobotContainer()
   {
-    // Configure the trigger bindings
+    // Configure the trigger bindings 
     configureBindings();
     registerAutos();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("LimelightAlign", new LimelightAlign(drivebase));
     NamedCommands.registerCommand("LimelightDriveAlignCommand", new LimelightDriveAlignCommand(drivebase, 0.25, -0.78));
-    NamedCommands.registerCommand("OutTakeAuto", new OutTakeAuto(clawSubsystem));
+    NamedCommands.registerCommand("OutTakeAuto", new OutTakeAuto(clawSubsystem, 3));
+    NamedCommands.registerCommand("MoveElevatorMediumCoralAuto", new MoveElevatorMediumCoralAuto(elevatorSubsystem, clawSubsystem));
   }
 
   /**

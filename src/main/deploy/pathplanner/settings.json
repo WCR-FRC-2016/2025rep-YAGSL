@@ -5,7 +5,9 @@
   "pathFolders": [
     "Back"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Back"
+  ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,

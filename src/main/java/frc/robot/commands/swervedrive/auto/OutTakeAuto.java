@@ -8,11 +8,14 @@ import frc.robot.subsystems.swervedrive.ClawSubsystem.ClawSubsystem;
 public class OutTakeAuto extends Command {
     ClawSubsystem clawSubsystem;
 
-    Timer timer;
+    Timer timer = new Timer();
+
+    double time;
 
 
-    public OutTakeAuto(ClawSubsystem clawSubsystem){
+    public OutTakeAuto(ClawSubsystem clawSubsystem, double time){
         this.clawSubsystem = clawSubsystem;
+        this.time = time;
         addRequirements(clawSubsystem);
     }
 
@@ -23,16 +26,26 @@ public class OutTakeAuto extends Command {
 
     @Override
     public void execute(){
-        if(timer.get() < 5)
-        clawSubsystem.kickerMove(0.95);
+        clawSubsystem.kickerMove(-0.95);
+        clawSubsystem.moveTo(-0.123359375);
     }
 
     @Override
     public boolean isFinished(){
-        if(timer.get() >= 5){
+        if(timer.get() >= time){
             clawSubsystem.stopKicker();
+            timer.stop();
+            timer.reset();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        clawSubsystem.stopClaw();
+        clawSubsystem.stopKicker();
+        timer.stop();
+        timer.reset();
     }
 }
