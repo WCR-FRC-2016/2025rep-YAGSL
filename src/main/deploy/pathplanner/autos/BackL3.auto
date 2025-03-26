@@ -13,26 +13,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BackTroph"
+            "pathName": "L3Move"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "OutTakeAuto"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "TrophMove"
-                }
-              }
-            ]
+            "name": "MoveElevatorHighCoralAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L3Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutTakeAuto"
           }
         }
       ]

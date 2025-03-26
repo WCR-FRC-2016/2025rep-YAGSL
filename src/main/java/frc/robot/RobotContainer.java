@@ -33,6 +33,9 @@ import frc.robot.commands.swervedrive.Led.LedControll;
 import frc.robot.commands.swervedrive.Led.MovingRainbow;
 import frc.robot.commands.swervedrive.actuator.PullActuator;
 import frc.robot.commands.swervedrive.actuator.PushActuator;
+import frc.robot.commands.swervedrive.auto.MoveElevatorTrophCoralAuto;
+import frc.robot.commands.swervedrive.auto.MoveElevatorHighCoralAuto;
+import frc.robot.commands.swervedrive.auto.MoveElevatorLowCoralAuto;
 import frc.robot.commands.swervedrive.auto.MoveElevatorMediumCoralAuto;
 import frc.robot.commands.swervedrive.auto.OutTakeAuto;
 import frc.robot.commands.swervedrive.claw.MoveClaw;
@@ -155,6 +158,9 @@ public class RobotContainer
     NamedCommands.registerCommand("LimelightDriveAlignCommand", new LimelightDriveAlignCommand(drivebase, 0.25, -0.78));
     NamedCommands.registerCommand("OutTakeAuto", new OutTakeAuto(clawSubsystem, 3));
     NamedCommands.registerCommand("MoveElevatorMediumCoralAuto", new MoveElevatorMediumCoralAuto(elevatorSubsystem, clawSubsystem));
+    NamedCommands.registerCommand("MoveElevatorTrophCoralAuto", new MoveElevatorTrophCoralAuto(elevatorSubsystem, clawSubsystem));
+    NamedCommands.registerCommand("MoveElevatorLowCoralAuto", new MoveElevatorLowCoralAuto(elevatorSubsystem, clawSubsystem));
+    NamedCommands.registerCommand("MoveElevatorHighCoralAuto", new MoveElevatorHighCoralAuto(elevatorSubsystem, clawSubsystem));
   }
 
   /**

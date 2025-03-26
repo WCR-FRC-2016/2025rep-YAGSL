@@ -27,7 +27,6 @@ public class OutTakeAuto extends Command {
     @Override
     public void execute(){
         clawSubsystem.kickerMove(-0.95);
-        clawSubsystem.moveTo(-0.123359375);
     }
 
     @Override
@@ -43,7 +42,6 @@ public class OutTakeAuto extends Command {
 
     @Override
     public void end(boolean interrupted){
-        clawSubsystem.stopClaw();
         clawSubsystem.stopKicker();
         timer.stop();
         timer.reset();

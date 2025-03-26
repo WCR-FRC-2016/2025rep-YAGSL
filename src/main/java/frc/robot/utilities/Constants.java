@@ -86,7 +86,7 @@ public final class Constants
     public static final double HOME_CORAL_CLAW_POSITION = 0.15;
     public static final double LOW_CORAL_ELEVATOR_POSITION = 30;
     public static final double HIGH_CORAL_ELEVATOR_POSITION = 84;
-    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 55.89;
+    public static final double MEDIUM_CORAL_ELEVATOR_POSITION = 52.89;
     public static final double HOME_ELEVATOR_POSITION = 1;
 
   }
@@ -97,8 +97,9 @@ public final class Constants
     public static final String[] AUTO_NAMES = {
       "MoveOut",
       "MoveAndPoint",
-      "SmallTestAuto",
-      "BackL2"
+      "BackTroph",
+      "BackL1",
+      "BackL3"
     };
   }
 

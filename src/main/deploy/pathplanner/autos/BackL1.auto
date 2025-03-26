@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "MoveElevatorMediumCoralAuto"
+            "name": "MoveElevatorLowCoralAuto"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BackL2Align"
+            "pathName": "BackAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutTakeAuto"
           }
         }
       ]
